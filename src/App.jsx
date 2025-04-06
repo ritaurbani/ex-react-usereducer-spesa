@@ -12,17 +12,18 @@ function App() {
 
   //prodotti nel carrello
   const [addedProducts, setAddedProducts] = useState([])
-
+  console.log(addedProducts)
   const addToCart = (product) => {
-  
+
     const itemToAdd = addedProducts.find((item, index) => item.name === product.name)
-    if(itemToAdd){return}
+    //se provo ad aggiungere elemento piu di una volta non si aggiunge
+    if (itemToAdd) { return }
     const cartItem = {
-      ...product, 
+      ...product,
       quantity: 1
     }
 
-    setAddedProducts(...addedProducts, cartItem)
+    setAddedProducts([...addedProducts, cartItem])
   }
 
   // const addToCart = product => {
@@ -57,13 +58,22 @@ function App() {
           ))}
         </ul>
         <div>
-          <h2>Prodotti nel carrello</h2>
           <ul>
-            {
-              addedProducts.map((item, index) => (
-                <li key={index}>{item.name} {item.price} {item.quantity}</li>
-              ))
-            }
+            {addedProducts.length > 0 && (
+              <>
+                <h2>Prodotti nel carrello</h2>
+                <ul>
+                  {
+                    addedProducts.map((item, index) => (
+                      <li key={index}>
+                        <p>{item.name} ({item.price.toFixed(2)}$) {item.quantity} </p>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </>
+            )}
+
           </ul>
         </div>
       </div>
