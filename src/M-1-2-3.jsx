@@ -1,4 +1,4 @@
-import { use, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 const lista = [
   { name: 'Mela', price: 0.5 },
@@ -86,6 +86,7 @@ function App() {
     setAddedProducts(curr => curr.filter((product, i) => product.name !== item.name))
   }
 
+  //totale che cambia all aggiunta di prodotti nel carrello
   const calculateTotalPrice = () => {
     let totalPriceToPay = 0
     addedProducts.forEach((item) => {
@@ -93,11 +94,23 @@ function App() {
     })
     return totalPriceToPay.toFixed(2) + "$"
   }
+
+  ////////////////////////VERSIONE CON USEMEMO////////////////////////////
+ const totalToPay = useMemo(() => {
+  return addedProducts.reduce((acc, num) => acc + num.price*num.quantity, 0)
+}, [addedProducts])//innesca il ricalcolo di totalToPay
+
   //VERSIONE CON VARIABILE E REDUCE
   //calcolata a ogni modifica - Trasformare array di addedProducts in un valore, la sua somma > reduce
   // const totalPriceToPay = addedProducts.reduce((acc, curr) => {
   //   return acc + (curr.price * curr.quantity)
   // },0 )
+
+  //per evitare che cio avvenisse a ogni render ma solo quando cambia addedProduct
+   const [totalPriceToPay, setTotalPriceToPay] = useState(0)
+   useEffect(() => {
+    setTotalPriceToPay(addedProducts.reduce((acc, p) => acc + p.price * p.quantity, 0))
+   }, [addedProducts])
 
   return (
     <>
